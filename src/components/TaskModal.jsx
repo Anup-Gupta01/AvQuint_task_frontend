@@ -1,73 +1,60 @@
 import { useState, useEffect } from 'react';
-import { X, CheckSquare } from 'lucide-react';
+import { X } from 'lucide-react';
 
-const INITIAL_FORM = { title: '', description: '', status: 'pending' };
+const EMPTY = { title: '', description: '', status: 'pending' };
 
 const TaskModal = ({ isOpen, onClose, onSubmit, editTask, loading }) => {
-  const [form, setForm] = useState(INITIAL_FORM);
+  const [form, setForm]     = useState(EMPTY);
   const [errors, setErrors] = useState({});
 
-  // Populate form when editing an existing task
   useEffect(() => {
-    if (editTask) {
-      setForm({
-        title: editTask.title || '',
-        description: editTask.description || '',
-        status: editTask.status || 'pending',
-      });
-    } else {
-      setForm(INITIAL_FORM);
+    if (isOpen) {
+      setForm(editTask ? { title: editTask.title || '', description: editTask.description || '', status: editTask.status || 'pending' } : EMPTY);
+      setErrors({});
     }
-    setErrors({});
-  }, [editTask, isOpen]);
+  }, [isOpen, editTask]);
 
   if (!isOpen) return null;
 
   const validate = () => {
-    const newErrors = {};
-    if (!form.title.trim()) newErrors.title = 'Task title is required';
-    else if (form.title.trim().length > 100) newErrors.title = 'Title cannot exceed 100 characters';
-    if (form.description.length > 500) newErrors.description = 'Description cannot exceed 500 characters';
-    return newErrors;
+    const e = {};
+    if (!form.title.trim())            e.title = 'Task title is required';
+    else if (form.title.length > 100)  e.title = 'Title cannot exceed 100 characters';
+    if (form.description.length > 500) e.description = 'Description cannot exceed 500 characters';
+    return e;
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
+  const handleChange = ({ target: { name, value } }) => {
+    setForm((p) => ({ ...p, [name]: value }));
+    if (errors[name]) setErrors((p) => ({ ...p, [name]: '' }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
     onSubmit(form);
   };
 
+  const handleOverlayClick = (e) => { if (e.target === e.currentTarget) onClose(); };
+
   return (
-    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div className="modal-overlay" onClick={handleOverlayClick}>
+      <div className="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
         {/* Header */}
         <div className="modal-header">
           <h2 className="modal-title" id="modal-title">
-            {editTask ? '✏️ Edit Task' : '✨ New Task'}
+            {editTask ? 'Edit task' : 'New task'}
           </h2>
-          <button
-            id="close-modal-btn"
-            className="btn-icon"
-            onClick={onClose}
-            aria-label="Close modal"
-          >
-            <X size={20} />
+          <button id="close-modal-btn" className="btn-icon" onClick={onClose} aria-label="Close">
+            <X size={18} />
           </button>
         </div>
 
-        {/* Form */}
+        {/* Body */}
         <form onSubmit={handleSubmit} noValidate>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <div className="modal-body">
             {/* Title */}
             <div className="form-group">
               <label className="form-label" htmlFor="task-title">
@@ -77,56 +64,40 @@ const TaskModal = ({ isOpen, onClose, onSubmit, editTask, loading }) => {
                 id="task-title"
                 name="title"
                 type="text"
-                className={`form-input ${errors.title ? 'error' : ''}`}
+                className={`form-input${errors.title ? ' has-error' : ''}`}
                 placeholder="What needs to be done?"
                 value={form.title}
                 onChange={handleChange}
-                autoFocus
                 maxLength={100}
+                autoFocus
               />
-              {errors.title && <span className="form-error">{errors.title}</span>}
+              {errors.title && <p className="form-error">{errors.title}</p>}
             </div>
 
             {/* Description */}
             <div className="form-group">
               <label className="form-label" htmlFor="task-description">
                 Description
-                <span style={{ color: 'var(--text-muted)', fontWeight: 400, marginLeft: '6px' }}>
-                  (optional)
-                </span>
+                <span style={{ color: 'var(--text-muted)', fontWeight: 400, marginLeft: '5px', fontSize: '12px' }}>optional</span>
               </label>
               <textarea
                 id="task-description"
                 name="description"
-                className={`form-input ${errors.description ? 'error' : ''}`}
-                placeholder="Add more details about this task..."
+                className={`form-input${errors.description ? ' has-error' : ''}`}
+                placeholder="Add any extra details..."
                 value={form.description}
                 onChange={handleChange}
                 maxLength={500}
                 rows={3}
               />
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                {errors.description && (
-                  <span className="form-error">{errors.description}</span>
-                )}
-                <span
-                  style={{
-                    fontSize: '11px',
-                    color: 'var(--text-muted)',
-                    marginLeft: 'auto',
-                  }}
-                >
-                  {form.description.length}/500
-                </span>
-              </div>
+              <p className="form-hint">{form.description.length}/500</p>
+              {errors.description && <p className="form-error">{errors.description}</p>}
             </div>
 
             {/* Status — only when editing */}
             {editTask && (
               <div className="form-group">
-                <label className="form-label" htmlFor="task-status">
-                  Status
-                </label>
+                <label className="form-label" htmlFor="task-status">Status</label>
                 <select
                   id="task-status"
                   name="status"
@@ -135,41 +106,32 @@ const TaskModal = ({ isOpen, onClose, onSubmit, editTask, loading }) => {
                   onChange={handleChange}
                   style={{ cursor: 'pointer' }}
                 >
-                  <option value="pending">⏳ Pending</option>
-                  <option value="completed">✅ Completed</option>
+                  <option value="pending">Pending</option>
+                  <option value="completed">Completed</option>
                 </select>
               </div>
             )}
+          </div>
 
-            {/* Actions */}
-            <div style={{ display: 'flex', gap: '12px', marginTop: '4px' }}>
-              <button
-                id="cancel-task-btn"
-                type="button"
-                className="btn btn-ghost"
-                style={{ flex: 1 }}
-                onClick={onClose}
-                disabled={loading}
-              >
-                Cancel
-              </button>
-              <button
-                id="submit-task-btn"
-                type="submit"
-                className="btn btn-primary"
-                style={{ flex: 1 }}
-                disabled={loading}
-              >
-                {loading ? (
-                  <span className="spinner" />
-                ) : (
-                  <>
-                    <CheckSquare size={15} />
-                    {editTask ? 'Save Changes' : 'Create Task'}
-                  </>
-                )}
-              </button>
-            </div>
+          {/* Footer */}
+          <div className="modal-footer">
+            <button
+              id="cancel-task-btn"
+              type="button"
+              className="btn btn-secondary"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button
+              id="submit-task-btn"
+              type="submit"
+              className="btn btn-primary"
+              disabled={loading}
+            >
+              {loading ? <span className="spinner" /> : editTask ? 'Save changes' : 'Create task'}
+            </button>
           </div>
         </form>
       </div>

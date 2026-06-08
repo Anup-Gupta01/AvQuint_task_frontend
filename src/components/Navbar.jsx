@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { CheckSquare, LogOut, User } from 'lucide-react';
+import { CheckSquare, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
@@ -20,26 +20,25 @@ const Navbar = () => {
       <div className="navbar-inner">
         {/* Brand */}
         <Link to="/dashboard" className="navbar-brand">
-          <div className="navbar-brand-icon">
-            <CheckSquare size={18} color="#fff" />
+          <div className="navbar-logo-box">
+            <CheckSquare size={17} strokeWidth={2.5} />
           </div>
-          <span className="navbar-brand-text">TaskFlow</span>
+          <span className="navbar-brand-name">
+            Task<span>Flow</span>
+          </span>
         </Link>
 
-        {/* User info + Logout */}
-        <div className="navbar-user">
-          <div className="navbar-avatar">{initials}</div>
-          <span style={{ display: 'none' }} className="user-name-desktop">
-            {user?.name}
-          </span>
+        {/* Right side */}
+        <div className="navbar-right">
+          <div className="navbar-avatar" aria-hidden="true">{initials}</div>
+          <span className="navbar-username">{user?.name}</span>
           <button
             id="logout-btn"
-            className="btn btn-ghost btn-sm"
+            className="btn btn-secondary btn-sm"
             onClick={handleLogout}
-            title="Logout"
           >
-            <LogOut size={15} />
-            <span>Logout</span>
+            <LogOut size={14} />
+            Logout
           </button>
         </div>
       </div>

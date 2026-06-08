@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
       const { data } = await api.post('/auth/register', { name, email, password });
       setToken(data.token);
       setUser(data.user);
-      toast.success(`Welcome, ${data.user.name}! 🎉`);
+      toast.success(`Welcome, ${data.user.name}! `);
       return { success: true };
     } catch (err) {
       const msg = err.response?.data?.message || 'Registration failed';
