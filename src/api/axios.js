@@ -10,7 +10,7 @@ const api = axios.create({
 // Attach JWT token to every request
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('taskmanager_token');
+    const token = sessionStorage.getItem('taskmanager_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -24,8 +24,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('taskmanager_token');
-      localStorage.removeItem('taskmanager_user');
+      sessionStorage.removeItem('taskmanager_token');
+      sessionStorage.removeItem('taskmanager_user');
       window.location.href = '/login';
     }
     return Promise.reject(error);

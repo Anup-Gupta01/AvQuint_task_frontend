@@ -10,23 +10,23 @@ const USER_KEY = 'taskmanager_user';
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     try {
-      const stored = localStorage.getItem(USER_KEY);
+      const stored = sessionStorage.getItem(USER_KEY);
       return stored ? JSON.parse(stored) : null;
     } catch {
       return null;
     }
   });
-  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY) || null);
+  const [token, setToken] = useState(() => sessionStorage.getItem(TOKEN_KEY) || null);
   const [loading, setLoading] = useState(false);
 
-  // Persist auth state to localStorage whenever it changes
+  // Persist auth state to sessionStorage whenever it changes
   useEffect(() => {
     if (token && user) {
-      localStorage.setItem(TOKEN_KEY, token);
-      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      sessionStorage.setItem(TOKEN_KEY, token);
+      sessionStorage.setItem(USER_KEY, JSON.stringify(user));
     } else {
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(USER_KEY);
+      sessionStorage.removeItem(TOKEN_KEY);
+      sessionStorage.removeItem(USER_KEY);
     }
   }, [token, user]);
 
