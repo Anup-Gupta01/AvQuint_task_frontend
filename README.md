@@ -1,16 +1,95 @@
-# React + Vite
+# Task Management App - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+This is the frontend of the Task Management Application built using React.js. The application allows users to register, log in, and manage their daily tasks through a clean and responsive user interface.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+* User Registration and Login
+* JWT-based Authentication
+* Create New Tasks
+* Edit Existing Tasks
+* Delete Tasks
+* Mark Tasks as Completed or Pending
+* Responsive Dashboard
+* Form Validation
+* API Integration with Backend
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+* React.js
+* React Router DOM
+* Axios
+* Context API
+* CSS / Tailwind CSS (if used)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Project Structure
+
+```bash
+src/
+├── components/
+├── pages/
+├── context/
+├── api/
+├── App.js
+└── index.js
+```
+
+## Installation
+
+1. Clone the repository
+
+```bash
+git clone <repository-url>
+```
+
+2. Navigate to frontend folder
+
+```bash
+cd frontend
+```
+
+3. Install dependencies
+
+```bash
+npm install
+```
+
+4. Create a .env file
+
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+```
+
+5. Start the development server
+
+```bash
+npm start
+```
+
+## Available Pages
+
+### Register Page
+
+Allows new users to create an account.
+
+### Login Page
+
+Authenticates users and provides access to the dashboard.
+
+### Dashboard Page
+
+Displays all tasks and provides CRUD functionality.
+
+## Future Improvements
+
+* Task Search
+* Task Filtering
+* Pagination
+* Dark Mode
+* Drag and Drop Task Management
+
+## Author
+
+Developed as part of a MERN Stack Internship Assignment.
